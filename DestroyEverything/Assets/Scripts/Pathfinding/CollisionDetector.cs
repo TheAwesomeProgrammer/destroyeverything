@@ -42,7 +42,7 @@ public class CollisionDetector : MonoBehaviour
     
           foreach (UnWalkable tUnWalkable in cUnwalkAbles)
            {
-               if (Vector3.Distance(tUnWalkable.Postion, pPosToCheck) < 0.95f) 
+               if (Vector3.Distance(tUnWalkable.Postion, pPosToCheck) < (tUnWalkable.LossyScale.x - tUnWalkable.LossyScale.x/10)) 
                {
                    tIsCollingWithUnWalkable = true;
                }

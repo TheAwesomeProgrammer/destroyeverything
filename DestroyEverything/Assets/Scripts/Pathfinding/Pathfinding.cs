@@ -16,6 +16,7 @@ public class Pathfinding : MonoBehaviour
  
 
     public float GridExpandNumber = 0.1f;
+    public float TimeOut;
 
     public List<Node> cClosedList { get; set; }
     public List<Node> cOpenList { get; set; }
@@ -174,15 +175,13 @@ public class Pathfinding : MonoBehaviour
         };
         cOpenList.Add(mCurrentNode);
 
-        int tTimesToRun = 50;
-        int tCount = 0;
 
-       
 
-        while(tCount < tTimesToRun)
-        {
-            tCount++;
-
+        float tTimeOut = Time.time + TimeOut;
+        bool run = true;
+        while (run)
+         {
+           
             AddSquaresToOpenListAroundYou(mCurrentNode, pPosToFindRoadTo);
 
 
@@ -196,26 +195,51 @@ public class Pathfinding : MonoBehaviour
                     LowestF = tNode.FCost;
                     tLowestFNode = tNode;
                 }
-
             }
+
             // Add the lowest fValue to closedlist and remove it from the openlist.
             cOpenList.Remove(tLowestFNode);
             cClosedList.Add(tLowestFNode);
             mCurrentNode = tLowestFNode;
 
-            if(mCurrentNode == null || Vector3.Distance(mCurrentNode.Position,pPosToFindRoadTo) < GridExpandNumber)
+            if(mCurrentNode == null || Mathf.Abs(mCurrentNode.Position.x - pPosToFindRoadTo.x) < GridExpandNumber &&
+                Mathf.Abs(mCurrentNode.Position.z - pPosToFindRoadTo.z) < GridExpandNumber)
             {
-               return cClosedList;
+                run = false;
+              return MakeListToFollow();
+            }
+
+            if(cOpenList.Count <= 0)
+            {
+                run = false;
+              return MakeListToFollow();
+            }
+
+            if((tTimeOut) < Time.time)
+            {
+                run = false;
+                return MakeListToFollow();
             }
           
         }
 
-        
+        return MakeListToFollow();
 
-       
-       
-        return cClosedList;
 
+    }
+
+    List<Node> MakeListToFollow()
+    {
+        List<Node> tListToFollow = new List<Node>();
+        Node tNode = cClosedList.ToArray()[cClosedList.Count - 1];
+       
+        while (tNode != null)
+        {
+            tListToFollow.Add(tNode);
+            tNode = tNode.Parent;
+        }
+
+        return tListToFollow;
     }
 
     

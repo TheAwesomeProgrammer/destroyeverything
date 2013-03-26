@@ -68,21 +68,24 @@ public class PlayerPath : MonoBehaviour
         mMoveToWayPoint = true;
         
         mListToFollow = mPathfinding.FindFastestRoadToPoint(transform.position,Camera.main.ScreenToWorldPoint(Input.mousePosition));
-        mWaypointNumber = 0;
+        mWaypointNumber =  mListToFollow.Count-1;
         
         SetWaypoint();
-
+        foreach (var tNode in mListToFollow)
+        {
+           // mWayPoint = Instantiate(Waypoint, tNode.Position, Quaternion.identity) as GameObject;
+        }
     }
 
     void SetWaypoint()
     {
-        if(mWaypointNumber < mListToFollow.Count)
+        if(mWaypointNumber - 1 > 0)
         {
-            mWaypointNumber += 2;
+            mWaypointNumber-= 1;
             mWayPointPostion = mListToFollow.ToArray()[mWaypointNumber].Position;
-            mWayPoint = Instantiate(Waypoint, mWayPointPostion, Quaternion.identity) as GameObject;
+           // mWayPoint = Instantiate(Waypoint, mWayPointPostion, Quaternion.identity) as GameObject;
         }
-        else if (mWaypointNumber == mListToFollow.Count)
+        else 
         {
             mMoveToWayPoint = false;
         }
