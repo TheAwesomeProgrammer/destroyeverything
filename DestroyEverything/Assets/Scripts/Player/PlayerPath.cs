@@ -1,10 +1,8 @@
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerPath : MonoBehaviour
 {
-
-
     public GameObject Waypoint;
 
     public float Speed = 5;
@@ -20,6 +18,12 @@ public class PlayerPath : MonoBehaviour
 
     private Pathfinding mPathfinding;
 
+    private List<Node> mListToFollow;
+
+    private int mWaypointNumber;
+
+    
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -34,7 +38,7 @@ public class PlayerPath : MonoBehaviour
 
    
 
-	if(Input.GetMouseButton(0) && cSelected)
+	if(Input.GetMouseButtonDown(0) && cSelected)
 	{
 	    MakeWayPoint();
 	}
@@ -50,23 +54,38 @@ public class PlayerPath : MonoBehaviour
     {
         if(Vector3.Distance(transform.position,mWayPointPostion) < WaypointDistance)
         {
-            mMoveToWayPoint = false;
-            Destroy(mWayPoint.gameObject);
+            Destroy(mWayPoint);
+            SetWaypoint();
         }
     }
 
     void MakeWayPoint()
     {
-        
         if(mMoveToWayPoint)
         {
-            Destroy(mWayPoint.gameObject);
+            Destroy(mWayPoint);
         }
         mMoveToWayPoint = true;
-        mWayPointPostion = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mWayPointPostion.y = transform.position.y;
-        mWayPoint = Instantiate(Waypoint, mWayPointPostion, transform.rotation) as GameObject;
-        mPathfinding.FindFastestRoadToPoint(transform.position,mWayPointPostion);
+        
+        mListToFollow = mPathfinding.FindFastestRoadToPoint(transform.position,Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        mWaypointNumber = 0;
+        
+        SetWaypoint();
+
+    }
+
+    void SetWaypoint()
+    {
+        if(mWaypointNumber < mListToFollow.Count)
+        {
+            mWaypointNumber += 2;
+            mWayPointPostion = mListToFollow.ToArray()[mWaypointNumber].Position;
+            mWayPoint = Instantiate(Waypoint, mWayPointPostion, Quaternion.identity) as GameObject;
+        }
+        else if (mWaypointNumber == mListToFollow.Count)
+        {
+            mMoveToWayPoint = false;
+        }
     }
 
     void FollowWayPoint()

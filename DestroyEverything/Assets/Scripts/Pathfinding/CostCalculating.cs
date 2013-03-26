@@ -19,7 +19,7 @@ public class CostCalculating : MonoBehaviour {
         int tGCost = 0;
         while(tNode.Parent != null)
         {
-            if (tNode.Position.x < tNode.Parent.Position.x || tNode.Position.x > tNode.Parent.Position.x ||
+         if (tNode.Position.x < tNode.Parent.Position.x || tNode.Position.x > tNode.Parent.Position.x ||
                 tNode.Position.z < tNode.Parent.Position.z || tNode.Position.z > tNode.Parent.Position.z)
             {
                 tGCost += 10;
