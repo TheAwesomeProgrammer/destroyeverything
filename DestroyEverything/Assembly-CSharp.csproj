@@ -44,10 +44,18 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Camera\ClickShow.cs" />
+     <Compile Include="Assets\Scripts\Mechanics\Corpse.cs" />
      <Compile Include="Assets\Scripts\Pathfinding\CollisionDetector.cs" />
      <Compile Include="Assets\Scripts\Pathfinding\CostCalculating.cs" />
      <Compile Include="Assets\Scripts\Pathfinding\Pathfinding.cs" />
+     <Compile Include="Assets\Scripts\Player\Player.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerPath.cs" />
+     <None Include="Assets\Plugins\iTweenEditor\README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
+      <Project>{2531C937-5B84-E3E3-D322-47633BEEB62C}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

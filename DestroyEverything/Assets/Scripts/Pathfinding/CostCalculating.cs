@@ -25,8 +25,10 @@ public class CostCalculating : MonoBehaviour {
                 tGCost += 10;
             }
 
-            if (tNode.Position.x < tNode.Parent.Position.x && tNode.Position.x > tNode.Parent.Position.x ||
-                tNode.Position.z < tNode.Parent.Position.z && tNode.Position.z > tNode.Parent.Position.z)
+            if (tNode.Position.x > tNode.Parent.Position.x && tNode.Position.z > tNode.Parent.Position.z ||
+                tNode.Position.z < tNode.Parent.Position.z && tNode.Position.x < tNode.Parent.Position.x ||
+                tNode.Position.x > tNode.Parent.Position.x && tNode.Position.z < tNode.Parent.Position.z ||
+                tNode.Position.z < tNode.Parent.Position.z && tNode.Position.x > tNode.Parent.Position.x)
             {
                 tGCost += 14;
             }
@@ -42,7 +44,7 @@ public class CostCalculating : MonoBehaviour {
         float tXDistance = Mathf.Abs(pNode.Position.x - pEndPos.x);
         float tZDistance = Mathf.Abs(pNode.Position.z - pEndPos.z);
 
-        tHCost = (int)Mathf.Round((((tXDistance /0.1f) * 10)) + ((tZDistance /0.1f) * 10));
+        tHCost = (int)Mathf.Round((((tXDistance / pGridExpandNumber) * 10)) + ((tZDistance / pGridExpandNumber) * 10));
         return tHCost;
     }
 }

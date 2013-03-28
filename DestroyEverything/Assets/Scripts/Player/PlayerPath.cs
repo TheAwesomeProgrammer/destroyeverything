@@ -7,6 +7,8 @@ public class PlayerPath : MonoBehaviour
 
     public float Speed = 5;
     public float WaypointDistance = 1;
+    public float percentsPerSecond = 0.02f; 
+    public float currentPathPercent = 0.0f; 
 
     public bool cSelected { get; set; }
 
@@ -20,6 +22,8 @@ public class PlayerPath : MonoBehaviour
 
     private List<Node> mListToFollow;
 
+    private List<Vector3> mVector3sToFollow; 
+
     private int mWaypointNumber;
 
     
@@ -27,18 +31,38 @@ public class PlayerPath : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+        mVector3sToFollow = new List<Vector3>();
 	    mPathfinding = GameObject.Find("Pathfinding").GetComponent<Pathfinding>();
 	    mWayPointPostion = Vector3.zero;
 	    cSelected = false;
 	}
 	
+    public GameObject GetSelectedPlayer()
+    {
+        GameObject tSelectedPlayer = null;
+        foreach (GameObject tPlayer in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            PlayerPath tPlayerPath = tPlayer.GetComponent<PlayerPath>();
+            if(tPlayerPath.cSelected)
+            {
+                tSelectedPlayer = tPlayerPath.gameObject;
+            }
+        }
+
+        return tSelectedPlayer;
+    }
+
 	// Update is called once per frame
 	void Update () {
     ReachedWayPoint();
-
+        if(cSelected)
+        {
+            GameObject.Find("Main Camera").SendMessage("SetAnyPlayerSelected",cSelected);
+            GameObject.Find("CollisionDetector").SendMessage("SetPlayerLossyScale",transform.lossyScale);
+        }
    
 
-	if(Input.GetMouseButtonDown(0) && cSelected)
+	if(Input.GetMouseButtonDown(1) && cSelected)
 	{
 	    MakeWayPoint();
 	}
@@ -68,22 +92,32 @@ public class PlayerPath : MonoBehaviour
         mMoveToWayPoint = true;
         
         mListToFollow = mPathfinding.FindFastestRoadToPoint(transform.position,Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        mVector3sToFollow.Clear();
+        currentPathPercent = 1.01f;
+        Node tLastNode = null;
+        bool tGoneStraight = false;
+        bool tDirectional = false;
+        foreach (Node tNode in mListToFollow)
+        {
+
+
+            mVector3sToFollow.Add(tNode.Position);
+        }
+      
+      
         mWaypointNumber =  mListToFollow.Count-1;
         
         SetWaypoint();
-        foreach (var tNode in mListToFollow)
-        {
-           // mWayPoint = Instantiate(Waypoint, tNode.Position, Quaternion.identity) as GameObject;
-        }
+       
     }
 
     void SetWaypoint()
     {
-        if(mWaypointNumber - 1 > 0)
+        if(mWaypointNumber > 0)
         {
             mWaypointNumber-= 1;
             mWayPointPostion = mListToFollow.ToArray()[mWaypointNumber].Position;
-           // mWayPoint = Instantiate(Waypoint, mWayPointPostion, Quaternion.identity) as GameObject;
+            mWayPointPostion.y = transform.position.y;
         }
         else 
         {
@@ -93,8 +127,9 @@ public class PlayerPath : MonoBehaviour
 
     void FollowWayPoint()
     {
-        transform.LookAt(mWayPointPostion);
-        transform.Translate(Vector3.forward  * Speed * Time.deltaTime);
+        //currentPathPercent -= percentsPerSecond * Time.deltaTime;
+      //  iTween.PutOnPath(gameObject, mVector3sToFollow.ToArray(), currentPathPercent);
+        transform.Translate((mWayPointPostion - transform.position).normalized * Speed * Time.deltaTime);
     }
 
     public void SetSelected(bool pIsSelected)
@@ -112,6 +147,22 @@ public class PlayerPath : MonoBehaviour
                tPlayer.SendMessage("SetSelected",false);
            }
         }
+        
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        if(mListToFollow != null)
+        {
+            //iTween.DrawPathGizmos(mVector3sToFollow.ToArray());
+            foreach (var tNode in mListToFollow)
+            {
+               // Instantiate(Waypoint, mWayPointPostion, Quaternion.identity);
+                Gizmos.DrawCube(tNode.Position, new Vector3(0.25f, 0.25f, 0.25f));
+            }
+        }
+       
         
     }
 }

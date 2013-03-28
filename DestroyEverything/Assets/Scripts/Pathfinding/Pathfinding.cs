@@ -42,12 +42,10 @@ public class Pathfinding : MonoBehaviour
         {
             GCost = 0,
             Parent = tNodeSquaresAround,
-            Position =
-                new Vector3(tNodeSquaresAround.Position.x + GridExpandNumber, tNodeSquaresAround.Position.y,
-                            tNodeSquaresAround.Position.z)
+            Position = new Vector3(tNodeSquaresAround.Position.x + GridExpandNumber, tNodeSquaresAround.Position.y,tNodeSquaresAround.Position.z)
         };
 
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tRightPos.Position))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tRightPos.Position) && !IsNodeInClosedOrOpenList(tRightPos))
         {
             tRightPos.GCost = mCostCalculater.CalculateGCost(tRightPos);
             tRightPos.HCost = mCostCalculater.CalculateHCost(tRightPos, pPosToFindRoadTo, GridExpandNumber);
@@ -63,7 +61,7 @@ public class Pathfinding : MonoBehaviour
             Parent = tNodeSquaresAround,
             Position = new Vector3(tNodeSquaresAround.Position.x - GridExpandNumber, tNodeSquaresAround.Position.y, tNodeSquaresAround.Position.z)
         };
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tLeftPos.Position))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tLeftPos.Position) && !IsNodeInClosedOrOpenList(tLeftPos))
         {
             tLeftPos.GCost = mCostCalculater.CalculateGCost(tLeftPos);
             tLeftPos.HCost = mCostCalculater.CalculateHCost(tLeftPos, pPosToFindRoadTo, GridExpandNumber);
@@ -78,7 +76,7 @@ public class Pathfinding : MonoBehaviour
             Parent = tNodeSquaresAround,
             Position = new Vector3(tNodeSquaresAround.Position.x, tNodeSquaresAround.Position.y, tNodeSquaresAround.Position.z + GridExpandNumber)
         };
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tUpPos.Position))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tUpPos.Position) && !IsNodeInClosedOrOpenList(tUpPos))
         {
             tUpPos.GCost = mCostCalculater.CalculateGCost(tUpPos);
             tUpPos.HCost = mCostCalculater.CalculateHCost(tUpPos, pPosToFindRoadTo, GridExpandNumber);
@@ -93,7 +91,7 @@ public class Pathfinding : MonoBehaviour
             Parent = tNodeSquaresAround,
             Position = new Vector3(tNodeSquaresAround.Position.x - GridExpandNumber, tNodeSquaresAround.Position.y, tNodeSquaresAround.Position.z + GridExpandNumber)
         };
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tUpLeftPos.Position))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tUpLeftPos.Position) && !IsNodeInClosedOrOpenList(tUpLeftPos))
         {
             tUpLeftPos.GCost = mCostCalculater.CalculateGCost(tUpLeftPos);
             tUpLeftPos.HCost = mCostCalculater.CalculateHCost(tUpLeftPos, pPosToFindRoadTo, GridExpandNumber);
@@ -108,7 +106,7 @@ public class Pathfinding : MonoBehaviour
             Parent = tNodeSquaresAround,
             Position = new Vector3(tNodeSquaresAround.Position.x + GridExpandNumber, tNodeSquaresAround.Position.y, tNodeSquaresAround.Position.z + GridExpandNumber)
         };
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tUpRightPos.Position))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tUpRightPos.Position) && !IsNodeInClosedOrOpenList(tUpRightPos))
         {
             tUpRightPos.GCost = mCostCalculater.CalculateGCost(tUpRightPos);
             tUpRightPos.HCost = mCostCalculater.CalculateHCost(tUpRightPos, pPosToFindRoadTo, GridExpandNumber);
@@ -122,12 +120,11 @@ public class Pathfinding : MonoBehaviour
             Parent = tNodeSquaresAround,
             Position = new Vector3(tNodeSquaresAround.Position.x, tNodeSquaresAround.Position.y, tNodeSquaresAround.Position.z - GridExpandNumber)
         };
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tDownPos.Position))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tDownPos.Position) && !IsNodeInClosedOrOpenList(tDownPos))
         {
             tDownPos.GCost = mCostCalculater.CalculateGCost(tDownPos);
             tDownPos.HCost = mCostCalculater.CalculateHCost(tDownPos, pPosToFindRoadTo, GridExpandNumber);
             tDownPos.FCost = tDownPos.GCost + tDownPos.HCost;
-       
             cOpenList.Add(tDownPos);
         }
 
@@ -137,7 +134,7 @@ public class Pathfinding : MonoBehaviour
             Parent = tNodeSquaresAround,
             Position = new Vector3(tNodeSquaresAround.Position.x - GridExpandNumber, tNodeSquaresAround.Position.y, tNodeSquaresAround.Position.z - GridExpandNumber)
         };
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tDownLeftPos.Position))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tDownLeftPos.Position) && !IsNodeInClosedOrOpenList(tDownLeftPos))
         {
             tDownLeftPos.GCost = mCostCalculater.CalculateGCost(tDownLeftPos);
             tDownLeftPos.HCost = mCostCalculater.CalculateHCost(tDownLeftPos, pPosToFindRoadTo, GridExpandNumber);
@@ -152,7 +149,7 @@ public class Pathfinding : MonoBehaviour
             Parent = tNodeSquaresAround,
             Position = new Vector3(tNodeSquaresAround.Position.x + GridExpandNumber, tNodeSquaresAround.Position.y, tNodeSquaresAround.Position.z - GridExpandNumber)
         };
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tDownRightPos.Position))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tDownRightPos.Position) && !IsNodeInClosedOrOpenList(tDownRightPos))
         {
             tDownRightPos.GCost = mCostCalculater.CalculateGCost(tDownRightPos);
             tDownRightPos.HCost = mCostCalculater.CalculateHCost(tDownRightPos, pPosToFindRoadTo, GridExpandNumber);
@@ -162,6 +159,58 @@ public class Pathfinding : MonoBehaviour
 
     }
 
+   bool BetterPathGCost(Node pNode)
+   {
+       bool tBetterPath = false;
+        Node tNode = pNode;
+        int tCost = mCurrentNode.GCost;
+        if (tNode.Position.x < mCurrentNode.Position.x || tNode.Position.x > mCurrentNode.Position.x ||
+             tNode.Position.z < mCurrentNode.Position.z || tNode.Position.z > mCurrentNode.Position.z)
+        {
+            tCost += 10;
+        }
+
+        if (tNode.Position.x < mCurrentNode.Position.x && tNode.Position.x > mCurrentNode.Position.x ||
+            tNode.Position.z < mCurrentNode.Position.z && tNode.Position.z > mCurrentNode.Position.z)
+        {
+            tCost += 14;
+        }
+
+       if(tNode.GCost > tCost)
+       {
+           tBetterPath = true;
+       }
+
+       return tBetterPath;
+    }
+
+    bool IsNodeInClosedOrOpenList(Node pNodeToCheck)
+    {
+        bool tIsNodeInClosedOrOpenList = false;
+
+        foreach (Node tClosedNode in cClosedList)
+        {
+            if(Vector3.Distance(pNodeToCheck.Position,tClosedNode.Position) < (GridExpandNumber/2))
+            {
+                tIsNodeInClosedOrOpenList = true;
+            }
+        }
+
+        foreach (Node tOpenNode in cOpenList)
+        {
+            if (Vector3.Distance(pNodeToCheck.Position, tOpenNode.Position) < (GridExpandNumber /2))
+            {
+                if(BetterPathGCost(tOpenNode))
+                {
+                    tOpenNode.Parent = mCurrentNode;
+                }
+                tIsNodeInClosedOrOpenList = true;
+            }
+        }
+
+        return tIsNodeInClosedOrOpenList;
+    }
+
     public List<Node> FindFastestRoadToPoint(Vector3 pStartPos,Vector3 pPosToFindRoadTo)
     {
         cOpenList = new List<Node>();
@@ -169,58 +218,63 @@ public class Pathfinding : MonoBehaviour
 
         mCurrentNode = new Node()
         {
-            GCost = 0,
             Parent = null,
             Position = pStartPos
         };
         cOpenList.Add(mCurrentNode);
 
-
+        int tTimesToRun = 5000;
+        int tCount = 0;
 
         float tTimeOut = Time.time + TimeOut;
         bool run = true;
-        while (run)
-         {
-           
+        while (tCount < tTimesToRun)
+        {
+            tCount++;
             AddSquaresToOpenListAroundYou(mCurrentNode, pPosToFindRoadTo);
-
+          
+            if (cOpenList.Count <= 0)
+            {
+                run = false;
+                return MakeListToFollow();
+            }
 
             // Find lowest Fvalue in openlist
             Node tLowestFNode = null;
             float LowestF = float.MaxValue;
             foreach (Node tNode in cOpenList)
             {
-                if (tNode.FCost < LowestF)
+                if (tNode.FCost <= LowestF)
                 {
                     LowestF = tNode.FCost;
                     tLowestFNode = tNode;
                 }
             }
+        
 
             // Add the lowest fValue to closedlist and remove it from the openlist.
             cOpenList.Remove(tLowestFNode);
             cClosedList.Add(tLowestFNode);
             mCurrentNode = tLowestFNode;
 
-            if(mCurrentNode == null || Mathf.Abs(mCurrentNode.Position.x - pPosToFindRoadTo.x) < GridExpandNumber &&
+            
+
+         
+
+            if(mCurrentNode == null || Mathf.Abs(mCurrentNode.Position.x - pPosToFindRoadTo.x) < GridExpandNumber  &&
                 Mathf.Abs(mCurrentNode.Position.z - pPosToFindRoadTo.z) < GridExpandNumber)
             {
                 run = false;
-              return MakeListToFollow();
+                return MakeListToFollow();
             }
 
-            if(cOpenList.Count <= 0)
-            {
-                run = false;
-              return MakeListToFollow();
-            }
+       
 
             if((tTimeOut) < Time.time)
             {
                 run = false;
                 return MakeListToFollow();
             }
-          
         }
 
         return MakeListToFollow();
@@ -233,7 +287,7 @@ public class Pathfinding : MonoBehaviour
         List<Node> tListToFollow = new List<Node>();
         Node tNode = cClosedList.ToArray()[cClosedList.Count - 1];
        
-        while (tNode != null)
+        while (tNode.Parent != null)
         {
             tListToFollow.Add(tNode);
             tNode = tNode.Parent;
@@ -242,6 +296,10 @@ public class Pathfinding : MonoBehaviour
         return tListToFollow;
     }
 
+    void OnGUI()
+    {
+        
+    }
     
 
 }
