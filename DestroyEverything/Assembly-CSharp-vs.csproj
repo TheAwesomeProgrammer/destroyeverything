@@ -45,8 +45,11 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Camera\ClickShow.cs" />
+     <Compile Include="Assets\Scripts\Extensions\RenderExtensions.cs" />
      <Compile Include="Assets\Scripts\Mechanics\Corpse.cs" />
      <Compile Include="Assets\Scripts\NPC&apos;s\NpcGoWaypoint.cs" />
+     <Compile Include="Assets\Scripts\NPC&apos;s\NpcPersonality.cs" />
+     <Compile Include="Assets\Scripts\NPC&apos;s\NpcRelationship.cs" />
      <Compile Include="Assets\Scripts\NPC&apos;s\NpcThinking.cs" />
      <Compile Include="Assets\Scripts\NPC&apos;s\NpcVision.cs" />
      <Compile Include="Assets\Scripts\NPC&apos;s\NpcWaypoint.cs" />
@@ -56,6 +59,7 @@
      <Compile Include="Assets\Scripts\Pathfinding\Pathfinding.cs" />
      <Compile Include="Assets\Scripts\Player\Player.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerPath.cs" />
+     <Compile Include="Assets\Scripts\Triggers\TriggerPlayer.cs" />
      <None Include="Assets\Plugins\iTweenEditor\README.txt" />
   </ItemGroup>
   <ItemGroup>

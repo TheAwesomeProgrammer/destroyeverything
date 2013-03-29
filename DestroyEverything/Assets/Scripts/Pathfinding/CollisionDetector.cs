@@ -61,4 +61,24 @@ public class CollisionDetector : MonoBehaviour
         
         return tIsCollingWithUnWalkable;
     }
+
+    public UnWalkable IsPointCollidingWithUnWalkableAndGetUnwalkable(Vector3 pPosToCheck)
+    {
+
+        UnWalkable tIsCollingWithUnWalkable = null;
+
+        foreach (UnWalkable tUnWalkable in cUnwalkAbles)
+        {
+            if (Mathf.Abs(tUnWalkable.Postion.x - pPosToCheck.x) < (tUnWalkable.LossyScale.x / 2 + cPLayerLossyScale.x) &&
+                Mathf.Abs(tUnWalkable.Postion.z - pPosToCheck.z) < (tUnWalkable.LossyScale.z / 2) + cPLayerLossyScale.z)
+            {
+
+                tIsCollingWithUnWalkable = tUnWalkable;
+            }
+        }
+
+
+
+        return tIsCollingWithUnWalkable;
+    }
 }

@@ -28,11 +28,14 @@ public class NpcGoWaypoint: MonoBehaviour
     private NpcWaypoint mWayPointToGoTo;
 
     private int mWaypointNumber;
+
+    private Camera mNpcCamera;
     
 
 	// Use this for initialization
 	void Start ()
 	{
+        mNpcCamera = transform.FindChild("Camera").GetComponent<Camera>();
         mMyNpcWaypoints = new List<NpcWaypoint>();
 	    mWayPointToGoTo = null;
         FindMyWaypoints();
@@ -66,6 +69,11 @@ public class NpcGoWaypoint: MonoBehaviour
         
     }
 
+    void DoActivity()
+    {
+        
+    }
+
     IEnumerator Wait()
     {
         DoAnimation();
@@ -87,6 +95,7 @@ public class NpcGoWaypoint: MonoBehaviour
     {
         if(mWayPointToGoTo != null)
         {
+            mNpcCamera.transform.LookAt(mWayPointToGoTo.transform.position);
             transform.Translate((mWayPointToGoTo.transform.position - transform.position).normalized * Speed * Time.deltaTime);
         }
     }

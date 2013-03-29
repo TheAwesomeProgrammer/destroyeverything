@@ -48,4 +48,10 @@ public class Player : MonoBehaviour
     {
         iTween.ScaleAdd(gameObject,pAmount,GrowTime);
     }
+
+    void Triggered()
+    {
+       print("BANANA");
+    }
+  
 }

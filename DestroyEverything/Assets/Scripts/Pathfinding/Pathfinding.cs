@@ -169,9 +169,10 @@ public class Pathfinding : MonoBehaviour
         {
             tCost += 10;
         }
-
-        if (tNode.Position.x < mCurrentNode.Position.x && tNode.Position.x > mCurrentNode.Position.x ||
-            tNode.Position.z < mCurrentNode.Position.z && tNode.Position.z > mCurrentNode.Position.z)
+        if (tNode.Position.x > tNode.Parent.Position.x && tNode.Position.z > tNode.Parent.Position.z ||
+            tNode.Position.z < tNode.Parent.Position.z && tNode.Position.x < tNode.Parent.Position.x ||
+            tNode.Position.x > tNode.Parent.Position.x && tNode.Position.z < tNode.Parent.Position.z ||
+            tNode.Position.z < tNode.Parent.Position.z && tNode.Position.x > tNode.Parent.Position.x)
         {
             tCost += 14;
         }
@@ -216,7 +217,35 @@ public class Pathfinding : MonoBehaviour
         cOpenList = new List<Node>();
         cClosedList = new List<Node>();
 
-        mCurrentNode = new Node()
+        UnWalkable tUnWalkableCollidingWith =
+            mCollisionDetector.IsPointCollidingWithUnWalkableAndGetUnwalkable(pPosToFindRoadTo);
+
+        if(tUnWalkableCollidingWith != null)
+        {
+            if (tUnWalkableCollidingWith.Postion.x >= pPosToFindRoadTo.x)
+            {
+                pPosToFindRoadTo.x -= tUnWalkableCollidingWith.LossyScale.x;
+            }
+
+            else if (tUnWalkableCollidingWith.Postion.x < pPosToFindRoadTo.x)
+            {
+                pPosToFindRoadTo.x += tUnWalkableCollidingWith.LossyScale.x;
+            }
+          
+        } 
+      
+     
+
+            
+
+              
+
+              
+
+            
+    
+
+    mCurrentNode = new Node()
         {
             Parent = null,
             Position = pStartPos

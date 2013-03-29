@@ -18,9 +18,12 @@ public class NpcVision : MonoBehaviour
 
     private GameObject mNpcToMoveTo;
 
+    private Camera mNpcCamera;
+
 	// Use this for initialization
 	void Start ()
 	{
+	    mNpcCamera = transform.FindChild("Camera").GetComponent<Camera>();
 	    mNpcThinking = GetComponent<NpcThinking>();
 	    mPlayers = GameObject.FindGameObjectsWithTag("Player");
 	}
@@ -37,32 +40,29 @@ public class NpcVision : MonoBehaviour
 
     void CheckIfCanSeePlayer()
     {
+
         foreach (GameObject tPlayer in mPlayers)
         {
-            RaycastHit tHitInfo;
-            if(Physics.Raycast(transform.position, (tPlayer.transform.position - transform.position),out tHitInfo,SeeDistance))
+            if(mNpcCamera != null)
             {
-                if(tHitInfo.collider.tag == "Player")
+                if (tPlayer.renderer.IsVisibleFrom(mNpcCamera))
                 {
-                   
-                    cCanSeePlayer = true;
-                }
-                else if (tHitInfo.collider.tag == "Corpse")
+                    RaycastHit tHitInfo;
+                    if(Physics.Raycast(transform.position,(tPlayer.transform.position-transform.position),out tHitInfo,SeeDistance))
+                    {
+                        if(tHitInfo.collider.tag == "Player")
+                        {
+                            cCanSeePlayer = true;
+                        }
+                        
+                    }
+                 }
+                else
                 {
-                    mNpcThinking.SendMessage("SetEmotion",Emotion.Scared);
                     cCanSeePlayer = false;
                 }
-                else 
-                {
-                    cCanSeePlayer = false;
-                }
-              
-                Debug.DrawLine(transform.position,tHitInfo.point,Color.red,.01f);
             }
-            else
-            {
-                cCanSeePlayer = false;
-            }
+           
         }
        
     }
