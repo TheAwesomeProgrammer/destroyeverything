@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 public class PlayerPath : MonoBehaviour
 {
-    public GameObject Waypoint;
-
     public float Speed = 5;
     public float WaypointDistance = 1;
     public float percentsPerSecond = 0.02f; 
