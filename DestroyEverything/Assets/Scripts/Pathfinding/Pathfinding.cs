@@ -232,18 +232,9 @@ public class Pathfinding : MonoBehaviour
                 pPosToFindRoadTo.x += tUnWalkableCollidingWith.LossyScale.x;
             }
           
-        } 
+        }
+
       
-     
-
-            
-
-              
-
-              
-
-            
-    
 
     mCurrentNode = new Node()
         {

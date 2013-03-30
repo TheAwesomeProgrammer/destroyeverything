@@ -27,20 +27,36 @@ public class MoveViaList : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        if(mGameobjectToMove != null)
+        {
+            ReachedWayPoint();
+        }
+        
+
         if (mMoveToWayPoint)
         {
             FollowWayPoint();
         }
 	}
 
-    public void MoveGameobjectViaList(GameObject pGameObjectToMove,List<Node> pListToFollow)
+    public void MoveGameobjectViaList(GameObject pGameObjectToMove,List<Node> pListToFollow,float pSpeed)
     {
+        Speed = pSpeed;
+        mMoveToWayPoint = true;
         mGameobjectToMove = pGameObjectToMove;
         mListToFollow = pListToFollow;
         mWaypointNumber = mListToFollow.Count - 1;
-        mMoveToWayPoint = true;
+        SetWaypoint();
+        
     }
 
+    public void Stop()
+    {
+        //mGameobjectToMove.SendMessage("Stopped");
+        mGameobjectToMove = null;
+        mMoveToWayPoint = false;
+    }
     
 
     void SetWaypoint()
@@ -49,27 +65,39 @@ public class MoveViaList : MonoBehaviour {
         {
             mWaypointNumber -= 1;
             mWayPointPostion = mListToFollow.ToArray()[mWaypointNumber].Position;
-            mWayPointPostion.y = transform.position.y;
+            mWayPointPostion.y = mGameobjectToMove.transform.position.y;
         }
         else
         {
+            mGameobjectToMove.SendMessage("Moved");
+            mGameobjectToMove = null;
             mMoveToWayPoint = false;
         }
     }
 
     void FollowWayPoint()
     {
-        //currentPathPercent -= percentsPerSecond * Time.deltaTime;
-        //  iTween.PutOnPath(gameObject, mVector3sToFollow.ToArray(), currentPathPercent);
-        transform.Translate((mWayPointPostion - transform.position).normalized * Speed * Time.deltaTime);
+        mGameobjectToMove.transform.Translate((mWayPointPostion - mGameobjectToMove.transform.position).normalized * Speed * Time.deltaTime);
     }
 
     void ReachedWayPoint()
     {
-        if (Vector3.Distance(transform.position, mWayPointPostion) < WaypointDistance)
+        if (Vector3.Distance(mGameobjectToMove.transform.position, mWayPointPostion) < WaypointDistance)
         {
-            Destroy(mWayPoint);
-            SetWaypoint();
+           SetWaypoint();
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        if (mListToFollow != null)
+        {
+
+            foreach (var tNode in mListToFollow)
+            {
+                Gizmos.DrawCube(tNode.Position, new Vector3(0.25f, 0.25f, 0.25f));
+            }
         }
     }
 }

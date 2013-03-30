@@ -30,7 +30,7 @@ public class PlayerPath : MonoBehaviour
 	void Start ()
 	{
         mVector3sToFollow = new List<Vector3>();
-	    mPathfinding = GameObject.Find("Pathfinding").GetComponent<Pathfinding>();
+        mPathfinding = transform.FindChild("Pathfinding").GetComponent<Pathfinding>();
 	    mWayPointPostion = Vector3.zero;
 	    cSelected = false;
 	}
@@ -56,7 +56,6 @@ public class PlayerPath : MonoBehaviour
         if(cSelected)
         {
             GameObject.Find("Main Camera").SendMessage("SetAnyPlayerSelected",cSelected);
-            GameObject.Find("CollisionDetector").SendMessage("SetPlayerLossyScale",transform.lossyScale);
         }
    
 
@@ -92,17 +91,7 @@ public class PlayerPath : MonoBehaviour
         mListToFollow = mPathfinding.FindFastestRoadToPoint(transform.position,Camera.main.ScreenToWorldPoint(Input.mousePosition));
         mVector3sToFollow.Clear();
         currentPathPercent = 1.01f;
-        Node tLastNode = null;
-        bool tGoneStraight = false;
-        bool tDirectional = false;
-        foreach (Node tNode in mListToFollow)
-        {
-
-
-            mVector3sToFollow.Add(tNode.Position);
-        }
-      
-      
+    
         mWaypointNumber =  mListToFollow.Count-1;
         
         SetWaypoint();

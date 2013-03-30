@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 [System.Serializable]
 public class Waypoint
-
 {
     public string Name;
     public float Worktime;
@@ -15,14 +14,15 @@ public class NpcGoWaypoint: MonoBehaviour
 {
 
     public Waypoint[] Waypoints;
-
+    
     public float WaypointReachDistance;
-    public float Speed;
+    public float WalkSpeed;
+    public float RunSpeed;
 
     
     public bool cMoveToWaypoint { get; set; }
     public bool cReachedWaypoint { get; set; }
-
+    
     private List<NpcWaypoint> mMyNpcWaypoints;
 
     private NpcWaypoint mWayPointToGoTo;
@@ -30,34 +30,44 @@ public class NpcGoWaypoint: MonoBehaviour
     private int mWaypointNumber;
 
     private Camera mNpcCamera;
+
+    private Pathfinding mPathfinding;
+
+    private MoveViaList mMoveViaList;
+
+    private bool mStopped;
     
 
 	// Use this for initialization
 	void Start ()
 	{
+	    mPathfinding = transform.FindChild("Pathfinding").GetComponent<Pathfinding>();
+        mMoveViaList = transform.FindChild("MoveViaList").GetComponent<MoveViaList>();
         mNpcCamera = transform.FindChild("Camera").GetComponent<Camera>();
-        mMyNpcWaypoints = new List<NpcWaypoint>();
-	    mWayPointToGoTo = null;
-        FindMyWaypoints();
-	    mWaypointNumber = 0;
         StartCycle();
-	}
+      }
     	// Update is called once per frame
 	void Update () {
 	    if(cMoveToWaypoint)
 	    {
 	        MoveToWaypoint();
 	    }
-        ReachedWaypoint();
 	}
 
-    void StartCycle()
+    public void StartCycle()
     {
+        mStopped = false;
+        mMyNpcWaypoints = new List<NpcWaypoint>();
+        FindMyWaypoints();
+        mWayPointToGoTo = null;
+        mWaypointNumber = 0;
         GoToWaypoint(Waypoints[mWaypointNumber].Name);
-    }
+     }
 
     public void StopCycle()
     {
+        mMoveViaList.Stop();
+        mStopped = true;
         cMoveToWaypoint = false;
         cReachedWaypoint = false;
     }
@@ -73,6 +83,37 @@ public class NpcGoWaypoint: MonoBehaviour
     {
         
     }
+
+    public void RunAwayToNpcWithMostLeadership()
+    {
+        int tRandomNumber = Random.Range(0, GameObject.FindGameObjectsWithTag("RunWaypoint").Length);
+        mMoveViaList.MoveGameobjectViaList(gameObject, 
+            mPathfinding.FindFastestRoadToPoint(transform.position,FindNpcWithMostLeadership().transform.position),RunSpeed);
+       
+    }
+
+    GameObject FindNpcWithMostLeadership()
+    {
+        GameObject tNpcWithMostLeadership = null;
+        int tLeadership = int.MinValue;
+        foreach (GameObject tNpc in GameObject.FindGameObjectsWithTag("Npc"))
+        {
+            if(tNpc != gameObject)
+            {
+                NpcPersonality tNpcPersonality = tNpc.GetComponent<NpcPersonality>();
+
+                if (tNpcPersonality.MyPersonality.Leadership > tLeadership)
+                {
+                    tLeadership = tNpcPersonality.MyPersonality.Leadership;
+                    tNpcWithMostLeadership = tNpc;
+                }
+            }
+           
+        }
+        return tNpcWithMostLeadership;
+    }
+
+    
 
     IEnumerator Wait()
     {
@@ -96,7 +137,9 @@ public class NpcGoWaypoint: MonoBehaviour
         if(mWayPointToGoTo != null)
         {
             mNpcCamera.transform.LookAt(mWayPointToGoTo.transform.position);
-            transform.Translate((mWayPointToGoTo.transform.position - transform.position).normalized * Speed * Time.deltaTime);
+            mMoveViaList.MoveGameobjectViaList(gameObject,mPathfinding.
+                FindFastestRoadToPoint(transform.position,
+                mWayPointToGoTo.transform.position),WalkSpeed);
         }
     }
 
@@ -130,16 +173,16 @@ public class NpcGoWaypoint: MonoBehaviour
 
  
 
-    void ReachedWaypoint()
+    void Moved()
     {
-        if(mWayPointToGoTo != null && Vector3.Distance(transform.position,mWayPointToGoTo.transform.position) < WaypointReachDistance)
-        {
-            mWayPointToGoTo = null;
-            cMoveToWaypoint = false;
-            cReachedWaypoint = true;
-            StartCoroutine(Wait());
-        }
-
+           if(!mStopped)
+           {
+               mWayPointToGoTo = null;
+               cMoveToWaypoint = false;
+               cReachedWaypoint = true;
+               StartCoroutine(Wait());
+           }
+    
         
     }
 	
