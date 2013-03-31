@@ -59,8 +59,6 @@ public class NpcGoWaypoint: MonoBehaviour
         mStopped = false;
         mMyNpcWaypoints = new List<NpcWaypoint>();
         FindMyWaypoints();
-        mWayPointToGoTo = null;
-        mWaypointNumber = 0;
         GoToWaypoint(Waypoints[mWaypointNumber].Name);
      }
 
@@ -88,7 +86,7 @@ public class NpcGoWaypoint: MonoBehaviour
     {
         int tRandomNumber = Random.Range(0, GameObject.FindGameObjectsWithTag("RunWaypoint").Length);
         mMoveViaList.MoveGameobjectViaList(gameObject, 
-            mPathfinding.FindFastestRoadToPoint(transform.position,FindNpcWithMostLeadership().transform.position),RunSpeed);
+            mPathfinding.FindFastestRoadToPoint(transform.position,FindNpcWithMostLeadership().transform.position,GetComponent<NpcPersonality>()),RunSpeed);
        
     }
 
@@ -139,7 +137,7 @@ public class NpcGoWaypoint: MonoBehaviour
             mNpcCamera.transform.LookAt(mWayPointToGoTo.transform.position);
             mMoveViaList.MoveGameobjectViaList(gameObject,mPathfinding.
                 FindFastestRoadToPoint(transform.position,
-                mWayPointToGoTo.transform.position),WalkSpeed);
+                mWayPointToGoTo.transform.position, GetComponent<NpcPersonality>()), WalkSpeed);
         }
     }
 

@@ -87,8 +87,8 @@ public class PlayerPath : MonoBehaviour
             Destroy(mWayPoint);
         }
         mMoveToWayPoint = true;
-        
-        mListToFollow = mPathfinding.FindFastestRoadToPoint(transform.position,Camera.main.ScreenToWorldPoint(Input.mousePosition));
+
+        mListToFollow = mPathfinding.FindFastestRoadToPoint(transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition), GetComponent<NpcPersonality>());
         mVector3sToFollow.Clear();
         currentPathPercent = 1.01f;
     

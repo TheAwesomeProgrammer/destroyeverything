@@ -6,7 +6,7 @@ public class UnWalkable
 {
     public Vector3 Postion;
     public Vector3 LossyScale;
-    public GameObject TheOwner;
+    public  NpcPersonality TheOwner;
 }
 
 public class CollisionDetector : MonoBehaviour
@@ -33,7 +33,7 @@ public class CollisionDetector : MonoBehaviour
 	                             });
         }
         cLossyScale = transform.parent.lossyScale / 2;
-        
+        AddMovingUnwalkables();
 	}
 
     
@@ -53,7 +53,7 @@ public class CollisionDetector : MonoBehaviour
             {
                 Postion = tNpc.transform.position,
                 LossyScale = tNpc.transform.lossyScale,
-                TheOwner = tNpc
+                TheOwner = tNpc.GetComponent<NpcPersonality>()
             });
         }
     }
@@ -62,7 +62,7 @@ public class CollisionDetector : MonoBehaviour
 
    
 
-    public bool IsPointCollidingWithUnWalkable(Vector3 pPosToCheck)
+    public bool IsPointCollidingWithUnWalkable(Vector3 pPosToCheck,NpcPersonality pTheOwner)
     {
       
         bool tIsCollingWithUnWalkable = false;
@@ -77,27 +77,37 @@ public class CollisionDetector : MonoBehaviour
                    tIsCollingWithUnWalkable = true;
                }
           }
-          foreach (UnWalkable tMovingUnwalkable in cMovingUnwalkAbles)
-          {
-              if (Mathf.Abs(tMovingUnwalkable.TheOwner.transform.position.x - pPosToCheck.x) < (tMovingUnwalkable.TheOwner.transform.lossyScale.x / 2 + cLossyScale.x) &&
-                Mathf.Abs(tMovingUnwalkable.TheOwner.transform.position.z - pPosToCheck.z) < (tMovingUnwalkable.TheOwner.transform.lossyScale.z / 2) + cLossyScale.z)
-              {
-                  tIsCollingWithUnWalkable = false;
-                  return tIsCollingWithUnWalkable;
-              }
+            foreach (UnWalkable tMovingUnwalkable in cMovingUnwalkAbles)
+            {
+               if(pTheOwner != null)
+               {
+                   if (tMovingUnwalkable.TheOwner.MyPersonality.Name == pTheOwner.MyPersonality.Name)
+                   {
+                       if (Mathf.Abs(tMovingUnwalkable.TheOwner.transform.position.x - pPosToCheck.x) <
+                           (tMovingUnwalkable.TheOwner.transform.lossyScale.x / 2 + cLossyScale.x) &&
+                           Mathf.Abs(tMovingUnwalkable.TheOwner.transform.position.z - pPosToCheck.z) <
+                           (tMovingUnwalkable.TheOwner.transform.lossyScale.z / 2) + cLossyScale.z)
+                       {
+                           tIsCollingWithUnWalkable = false;
+                           return tIsCollingWithUnWalkable;
+                       }
+                   }
+               }
 
-              else if (Mathf.Abs(tMovingUnwalkable.Postion.x - pPosToCheck.x) < (tMovingUnwalkable.LossyScale.x / 2 + cLossyScale.x) &&
-                 Mathf.Abs(tMovingUnwalkable.Postion.z - pPosToCheck.z) < (tMovingUnwalkable.LossyScale.z / 2) + cLossyScale.z)
-              {
-                  tIsCollingWithUnWalkable = true;
-              }
-          }
+                
+         
+                  else if (Mathf.Abs(tMovingUnwalkable.Postion.x - pPosToCheck.x) < (tMovingUnwalkable.LossyScale.x / 2 + cLossyScale.x) &&
+                   Mathf.Abs(tMovingUnwalkable.Postion.z - pPosToCheck.z) < (tMovingUnwalkable.LossyScale.z / 2) + cLossyScale.z)
+                {
+                    tIsCollingWithUnWalkable = true;
+                }
+            }
 
 
-        return tIsCollingWithUnWalkable;
+          return tIsCollingWithUnWalkable;
     }
 
-    public UnWalkable IsPointCollidingWithUnWalkableAndGetUnwalkable(Vector3 pPosToCheck)
+    public UnWalkable IsPointCollidingWithUnWalkableAndGetUnwalkable(Vector3 pPosToCheck,NpcPersonality pTheOwner)
     {
 
         UnWalkable tIsCollingWithUnWalkable = null;
@@ -113,13 +123,28 @@ public class CollisionDetector : MonoBehaviour
         }
         foreach (UnWalkable tMovingUnwalkable in cMovingUnwalkAbles)
         {
-            if (Mathf.Abs(tMovingUnwalkable.Postion.x - pPosToCheck.x) < (tMovingUnwalkable.LossyScale.x / 2 + cLossyScale.x) &&
-               Mathf.Abs(tMovingUnwalkable.Postion.z - pPosToCheck.z) < (tMovingUnwalkable.LossyScale.z / 2) + cLossyScale.z)
+            if (pTheOwner != null)
             {
-                tIsCollingWithUnWalkable = tMovingUnwalkable;
+                if (tMovingUnwalkable.TheOwner.MyPersonality.Name == pTheOwner.MyPersonality.Name)
+                {
+
+                    if (tIsCollingWithUnWalkable != null)
+                    {
+                        tIsCollingWithUnWalkable = null;
+                    }
+
+                }
+            }
+
+            else
+            {
+                if (Mathf.Abs(tMovingUnwalkable.TheOwner.transform.position.x - pPosToCheck.x) < (tMovingUnwalkable.TheOwner.transform.lossyScale.x/2) + cLossyScale.x &&
+                    Mathf.Abs(tMovingUnwalkable.TheOwner.transform.position.z - pPosToCheck.z) < (tMovingUnwalkable.TheOwner.transform.lossyScale.z/2) + cLossyScale.z)
+                {
+                    tIsCollingWithUnWalkable = tMovingUnwalkable;
+                }
             }
         }
-    
 
 
 

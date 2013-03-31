@@ -35,7 +35,7 @@ public class Pathfinding : MonoBehaviour
 
 	}
 
-    void AddSquaresToOpenListAroundYou(Node tNodeSquaresAround, Vector3 pPosToFindRoadTo)
+    void AddSquaresToOpenListAroundYou(Node tNodeSquaresAround, Vector3 pPosToFindRoadTo,NpcPersonality pTheOwner)
     {
         // Right position of player
         Node tRightPos = new Node()
@@ -45,7 +45,7 @@ public class Pathfinding : MonoBehaviour
             Position = new Vector3(tNodeSquaresAround.Position.x + GridExpandNumber, tNodeSquaresAround.Position.y,tNodeSquaresAround.Position.z)
         };
 
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tRightPos.Position) && !IsNodeInClosedOrOpenList(tRightPos))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tRightPos.Position,pTheOwner) && !IsNodeInClosedOrOpenList(tRightPos))
         {
             tRightPos.GCost = mCostCalculater.CalculateGCost(tRightPos);
             tRightPos.HCost = mCostCalculater.CalculateHCost(tRightPos, pPosToFindRoadTo, GridExpandNumber);
@@ -61,7 +61,7 @@ public class Pathfinding : MonoBehaviour
             Parent = tNodeSquaresAround,
             Position = new Vector3(tNodeSquaresAround.Position.x - GridExpandNumber, tNodeSquaresAround.Position.y, tNodeSquaresAround.Position.z)
         };
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tLeftPos.Position) && !IsNodeInClosedOrOpenList(tLeftPos))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tLeftPos.Position,pTheOwner) && !IsNodeInClosedOrOpenList(tLeftPos))
         {
             tLeftPos.GCost = mCostCalculater.CalculateGCost(tLeftPos);
             tLeftPos.HCost = mCostCalculater.CalculateHCost(tLeftPos, pPosToFindRoadTo, GridExpandNumber);
@@ -76,7 +76,7 @@ public class Pathfinding : MonoBehaviour
             Parent = tNodeSquaresAround,
             Position = new Vector3(tNodeSquaresAround.Position.x, tNodeSquaresAround.Position.y, tNodeSquaresAround.Position.z + GridExpandNumber)
         };
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tUpPos.Position) && !IsNodeInClosedOrOpenList(tUpPos))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tUpPos.Position, pTheOwner) && !IsNodeInClosedOrOpenList(tUpPos))
         {
             tUpPos.GCost = mCostCalculater.CalculateGCost(tUpPos);
             tUpPos.HCost = mCostCalculater.CalculateHCost(tUpPos, pPosToFindRoadTo, GridExpandNumber);
@@ -91,7 +91,7 @@ public class Pathfinding : MonoBehaviour
             Parent = tNodeSquaresAround,
             Position = new Vector3(tNodeSquaresAround.Position.x - GridExpandNumber, tNodeSquaresAround.Position.y, tNodeSquaresAround.Position.z + GridExpandNumber)
         };
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tUpLeftPos.Position) && !IsNodeInClosedOrOpenList(tUpLeftPos))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tUpLeftPos.Position, pTheOwner) && !IsNodeInClosedOrOpenList(tUpLeftPos))
         {
             tUpLeftPos.GCost = mCostCalculater.CalculateGCost(tUpLeftPos);
             tUpLeftPos.HCost = mCostCalculater.CalculateHCost(tUpLeftPos, pPosToFindRoadTo, GridExpandNumber);
@@ -106,7 +106,7 @@ public class Pathfinding : MonoBehaviour
             Parent = tNodeSquaresAround,
             Position = new Vector3(tNodeSquaresAround.Position.x + GridExpandNumber, tNodeSquaresAround.Position.y, tNodeSquaresAround.Position.z + GridExpandNumber)
         };
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tUpRightPos.Position) && !IsNodeInClosedOrOpenList(tUpRightPos))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tUpRightPos.Position, pTheOwner) && !IsNodeInClosedOrOpenList(tUpRightPos))
         {
             tUpRightPos.GCost = mCostCalculater.CalculateGCost(tUpRightPos);
             tUpRightPos.HCost = mCostCalculater.CalculateHCost(tUpRightPos, pPosToFindRoadTo, GridExpandNumber);
@@ -120,7 +120,7 @@ public class Pathfinding : MonoBehaviour
             Parent = tNodeSquaresAround,
             Position = new Vector3(tNodeSquaresAround.Position.x, tNodeSquaresAround.Position.y, tNodeSquaresAround.Position.z - GridExpandNumber)
         };
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tDownPos.Position) && !IsNodeInClosedOrOpenList(tDownPos))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tDownPos.Position, pTheOwner) && !IsNodeInClosedOrOpenList(tDownPos))
         {
             tDownPos.GCost = mCostCalculater.CalculateGCost(tDownPos);
             tDownPos.HCost = mCostCalculater.CalculateHCost(tDownPos, pPosToFindRoadTo, GridExpandNumber);
@@ -134,7 +134,7 @@ public class Pathfinding : MonoBehaviour
             Parent = tNodeSquaresAround,
             Position = new Vector3(tNodeSquaresAround.Position.x - GridExpandNumber, tNodeSquaresAround.Position.y, tNodeSquaresAround.Position.z - GridExpandNumber)
         };
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tDownLeftPos.Position) && !IsNodeInClosedOrOpenList(tDownLeftPos))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tDownLeftPos.Position, pTheOwner) && !IsNodeInClosedOrOpenList(tDownLeftPos))
         {
             tDownLeftPos.GCost = mCostCalculater.CalculateGCost(tDownLeftPos);
             tDownLeftPos.HCost = mCostCalculater.CalculateHCost(tDownLeftPos, pPosToFindRoadTo, GridExpandNumber);
@@ -149,7 +149,7 @@ public class Pathfinding : MonoBehaviour
             Parent = tNodeSquaresAround,
             Position = new Vector3(tNodeSquaresAround.Position.x + GridExpandNumber, tNodeSquaresAround.Position.y, tNodeSquaresAround.Position.z - GridExpandNumber)
         };
-        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tDownRightPos.Position) && !IsNodeInClosedOrOpenList(tDownRightPos))
+        if (!mCollisionDetector.IsPointCollidingWithUnWalkable(tDownRightPos.Position, pTheOwner) && !IsNodeInClosedOrOpenList(tDownRightPos))
         {
             tDownRightPos.GCost = mCostCalculater.CalculateGCost(tDownRightPos);
             tDownRightPos.HCost = mCostCalculater.CalculateHCost(tDownRightPos, pPosToFindRoadTo, GridExpandNumber);
@@ -212,13 +212,13 @@ public class Pathfinding : MonoBehaviour
         return tIsNodeInClosedOrOpenList;
     }
 
-    public List<Node> FindFastestRoadToPoint(Vector3 pStartPos,Vector3 pPosToFindRoadTo)
+    public List<Node> FindFastestRoadToPoint(Vector3 pStartPos,Vector3 pPosToFindRoadTo,NpcPersonality pTheOwner)
     {
         cOpenList = new List<Node>();
         cClosedList = new List<Node>();
 
         UnWalkable tUnWalkableCollidingWith =
-            mCollisionDetector.IsPointCollidingWithUnWalkableAndGetUnwalkable(pPosToFindRoadTo);
+            mCollisionDetector.IsPointCollidingWithUnWalkableAndGetUnwalkable(pPosToFindRoadTo,pTheOwner);
 
         if(tUnWalkableCollidingWith != null)
         {
@@ -251,7 +251,7 @@ public class Pathfinding : MonoBehaviour
         while (tCount < tTimesToRun)
         {
             tCount++;
-            AddSquaresToOpenListAroundYou(mCurrentNode, pPosToFindRoadTo);
+            AddSquaresToOpenListAroundYou(mCurrentNode, pPosToFindRoadTo,pTheOwner);
           
             if (cOpenList.Count <= 0)
             {

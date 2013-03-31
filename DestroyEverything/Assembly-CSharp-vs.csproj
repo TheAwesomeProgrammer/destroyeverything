@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Camera\ClickShow.cs" />
+     <Compile Include="Assets\Scripts\Camera\FollowPlayer.cs" />
      <Compile Include="Assets\Scripts\Extensions\RenderExtensions.cs" />
      <Compile Include="Assets\Scripts\Mechanics\Corpse.cs" />
      <Compile Include="Assets\Scripts\NPC&apos;s\NpcGoWaypoint.cs" />
