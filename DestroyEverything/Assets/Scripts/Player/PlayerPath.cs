@@ -20,7 +20,7 @@ public class PlayerPath : MonoBehaviour
 
     private List<Node> mListToFollow;
 
-    private List<Vector3> mVector3sToFollow; 
+    private Vector3 mPostionToGetTo;
 
     private int mWaypointNumber;
 
@@ -29,7 +29,6 @@ public class PlayerPath : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-        mVector3sToFollow = new List<Vector3>();
         mPathfinding = transform.FindChild("Pathfinding").GetComponent<Pathfinding>();
 	    mWayPointPostion = Vector3.zero;
 	    cSelected = false;
@@ -61,13 +60,16 @@ public class PlayerPath : MonoBehaviour
 
 	if(Input.GetMouseButtonDown(1) && cSelected)
 	{
-	    MakeWayPoint();
+        mPostionToGetTo = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+	    mMoveToWayPoint = true;
 	}
+ 
 
-    if(mMoveToWayPoint)
-    {
+	    if(mMoveToWayPoint)
+        {
+            MakeWayPoint();
        FollowWayPoint();
-    }
+       }
 
 	}
 
@@ -86,11 +88,10 @@ public class PlayerPath : MonoBehaviour
         {
             Destroy(mWayPoint);
         }
-        mMoveToWayPoint = true;
+       
+        
 
-        mListToFollow = mPathfinding.FindFastestRoadToPoint(transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition), GetComponent<NpcPersonality>());
-        mVector3sToFollow.Clear();
-        currentPathPercent = 1.01f;
+        mListToFollow = mPathfinding.FindFastestRoadToPoint(transform.position, mPostionToGetTo, gameObject);
     
         mWaypointNumber =  mListToFollow.Count-1;
         

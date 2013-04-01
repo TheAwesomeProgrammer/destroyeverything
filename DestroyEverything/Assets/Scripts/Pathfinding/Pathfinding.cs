@@ -35,7 +35,7 @@ public class Pathfinding : MonoBehaviour
 
 	}
 
-    void AddSquaresToOpenListAroundYou(Node tNodeSquaresAround, Vector3 pPosToFindRoadTo,NpcPersonality pTheOwner)
+    void AddSquaresToOpenListAroundYou(Node tNodeSquaresAround, Vector3 pPosToFindRoadTo,GameObject pTheOwner)
     {
         // Right position of player
         Node tRightPos = new Node()
@@ -212,13 +212,12 @@ public class Pathfinding : MonoBehaviour
         return tIsNodeInClosedOrOpenList;
     }
 
-    public List<Node> FindFastestRoadToPoint(Vector3 pStartPos,Vector3 pPosToFindRoadTo,NpcPersonality pTheOwner)
+    public List<Node> FindFastestRoadToPoint(Vector3 pStartPos,Vector3 pPosToFindRoadTo,GameObject pTheOwner)
     {
         cOpenList = new List<Node>();
         cClosedList = new List<Node>();
 
-        UnWalkable tUnWalkableCollidingWith =
-            mCollisionDetector.IsPointCollidingWithUnWalkableAndGetUnwalkable(pPosToFindRoadTo,pTheOwner);
+        UnWalkable tUnWalkableCollidingWith = mCollisionDetector.IsPointCollidingWithUnWalkableAndGetUnwalkable(pPosToFindRoadTo,pTheOwner);
 
         if(tUnWalkableCollidingWith != null)
         {
@@ -243,12 +242,12 @@ public class Pathfinding : MonoBehaviour
         };
         cOpenList.Add(mCurrentNode);
 
-        int tTimesToRun = 5000;
+        int tTimesToRun = 2000;
         int tCount = 0;
 
-        float tTimeOut = Time.time + TimeOut;
+        float tTimeOut = Time.realtimeSinceStartup + TimeOut;
         bool run = true;
-        while (tCount < tTimesToRun)
+        while (run)
         {
             tCount++;
             AddSquaresToOpenListAroundYou(mCurrentNode, pPosToFindRoadTo,pTheOwner);
@@ -290,7 +289,7 @@ public class Pathfinding : MonoBehaviour
 
        
 
-            if((tTimeOut) < Time.time)
+            if((tTimeOut) < Time.realtimeSinceStartup)
             {
                 run = false;
                 return MakeListToFollow();

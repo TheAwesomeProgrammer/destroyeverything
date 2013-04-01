@@ -18,6 +18,6 @@ public class NpcWaypoint : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        Gizmos.DrawCube(transform.position,new Vector3(1,1,1));
+        Gizmos.DrawCube(transform.position,transform.lossyScale);
     }
 }
