@@ -17,6 +17,7 @@ public class PlayerPath : MonoBehaviour
     private GameObject mWayPoint;
 
     private Pathfinding mPathfinding;
+    private MoveViaList mMoveViaList;
 
     private List<Node> mListToFollow;
 
@@ -29,9 +30,11 @@ public class PlayerPath : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+        mMoveViaList = transform.FindChild("MoveViaList").GetComponent<MoveViaList>();
         mPathfinding = transform.FindChild("Pathfinding").GetComponent<Pathfinding>();
 	    mWayPointPostion = Vector3.zero;
 	    cSelected = false;
+        mListToFollow = new List<Node>();
 	}
 	
     public GameObject GetSelectedPlayer()
@@ -56,19 +59,23 @@ public class PlayerPath : MonoBehaviour
         {
             GameObject.Find("Main Camera").SendMessage("SetAnyPlayerSelected",cSelected);
         }
+        if (!mPathfinding.cRun && mPostionToGetTo != Vector3.zero)
+        {
+            mPathfinding.InitFastestRoad(transform.position, mPostionToGetTo, gameObject);
+        }
    
 
 	if(Input.GetMouseButtonDown(1) && cSelected)
 	{
         mPostionToGetTo = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-	    mMoveToWayPoint = true;
+        mMoveToWayPoint = true;
 	}
  
 
 	    if(mMoveToWayPoint)
         {
             MakeWayPoint();
-       FollowWayPoint();
+            FollowWayPoint();
        }
 
 	}
@@ -88,14 +95,19 @@ public class PlayerPath : MonoBehaviour
         {
             Destroy(mWayPoint);
         }
+
+      
+ 
+            mWaypointNumber = mListToFollow.Count - 1;
        
         
-
-        mListToFollow = mPathfinding.FindFastestRoadToPoint(transform.position, mPostionToGetTo, gameObject);
-    
-        mWaypointNumber =  mListToFollow.Count-1;
-        
         SetWaypoint();
+       
+    }
+
+    void SetListToFollow(List<Node> pListToFollow)
+    {
+        mMoveViaList.MoveGameobjectViaList(gameObject, pListToFollow, Speed);
        
     }
 
@@ -111,6 +123,10 @@ public class PlayerPath : MonoBehaviour
         {
             mMoveToWayPoint = false;
         }
+    }
+
+    void Moved()
+    {
     }
 
     void FollowWayPoint()

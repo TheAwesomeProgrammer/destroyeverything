@@ -85,9 +85,13 @@ public class NpcGoWaypoint: MonoBehaviour
     public void RunAwayToNpcWithMostLeadership()
     {
         int tRandomNumber = Random.Range(0, GameObject.FindGameObjectsWithTag("RunWaypoint").Length);
-        mMoveViaList.MoveGameobjectViaList(gameObject, 
-            mPathfinding.FindFastestRoadToPoint(transform.position,FindNpcWithMostLeadership().transform.position,gameObject),RunSpeed);
+      mPathfinding.InitFastestRoad(transform.position,FindNpcWithMostLeadership().transform.position,gameObject);
        
+    }
+
+    void SetListToFollow(List<Node> pListToFollow)
+    {
+        mMoveViaList.MoveGameobjectViaList(gameObject,pListToFollow,WalkSpeed);
     }
 
     GameObject FindNpcWithMostLeadership()
@@ -135,7 +139,11 @@ public class NpcGoWaypoint: MonoBehaviour
         if(mWayPointToGoTo != null)
         {
             mNpcCamera.transform.LookAt(mWayPointToGoTo.transform.position);
-            mMoveViaList.MoveGameobjectViaList(gameObject,mPathfinding.FindFastestRoadToPoint(transform.position,mWayPointToGoTo.transform.position, gameObject), WalkSpeed);
+            if(!mPathfinding.cRun)
+            {
+                mPathfinding.InitFastestRoad(transform.position, mWayPointToGoTo.transform.position, gameObject);
+            }
+           
         }
     }
 
