@@ -30,7 +30,7 @@ public class CostCalculating : MonoBehaviour {
                 tNode.Position.x > tNode.Parent.Position.x && tNode.Position.z < tNode.Parent.Position.z ||
                 tNode.Position.z < tNode.Parent.Position.z && tNode.Position.x > tNode.Parent.Position.x)
             {
-                tGCost += 14;
+                tGCost += 10;
             }
 
             tNode = tNode.Parent;

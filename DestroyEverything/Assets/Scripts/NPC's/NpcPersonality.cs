@@ -54,7 +54,6 @@ public class NpcPersonality : MonoBehaviour
 
     void RunAway()
     {
-        mNpcGoWaypoint.StopCycle();
         mNpcGoWaypoint.RunAwayToNpcWithMostLeadership();
     }
 

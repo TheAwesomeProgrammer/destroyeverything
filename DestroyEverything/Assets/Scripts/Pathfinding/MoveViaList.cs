@@ -20,35 +20,43 @@ public class MoveViaList : MonoBehaviour {
 
     private GameObject mGameobjectToMove;
 
+    private Pathfinding mPathfinding;
+
+    private Vector3 mEndPos;
+    private Vector3 mStartPos;
+
 	// Use this for initialization
 	void Start () {
         mWayPointPostion = Vector3.zero;
+        mPathfinding = transform.parent.FindChild("Pathfinding").GetComponent<Pathfinding>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-        if(mGameobjectToMove != null)
+        if (mGameobjectToMove != null)
         {
             ReachedWayPoint();
         }
-        
+
 
         if (mMoveToWayPoint)
         {
             FollowWayPoint();
         }
+    
+      
 	}
 
-    public void MoveGameobjectViaList(GameObject pGameObjectToMove,List<Node> pListToFollow,float pSpeed)
+    public void MoveGameobjectViaList(GameObject pGameObjectToMove,Vector3 pStartPos,Vector3 pEndPos,float pSpeed)
     {
         Speed = pSpeed;
         mMoveToWayPoint = true;
         mGameobjectToMove = pGameObjectToMove;
-        mListToFollow = pListToFollow;
-        mWaypointNumber = mListToFollow.Count - 1;
-        SetWaypoint();
-        
+        mStartPos = pStartPos;
+        mEndPos = pEndPos;
+        print("ENDPOS " + mEndPos);
+        FindList();
     }
 
     public void Stop()
@@ -57,7 +65,22 @@ public class MoveViaList : MonoBehaviour {
         mGameobjectToMove = null;
         mMoveToWayPoint = false;
     }
-    
+
+
+
+    void SetListToFollow(List<Node> pListToFollow)
+    {
+        mListToFollow = pListToFollow;
+        mWaypointNumber = mListToFollow.Count - 1;
+        SetWaypoint();
+    }
+
+    void FindList()
+    {
+
+            mPathfinding.InitFastestRoad(mStartPos, mEndPos, mGameobjectToMove);
+     
+    }
 
     void SetWaypoint()
     {
@@ -67,12 +90,7 @@ public class MoveViaList : MonoBehaviour {
             mWayPointPostion = mListToFollow.ToArray()[mWaypointNumber].Position;
             mWayPointPostion.y = mGameobjectToMove.transform.position.y;
         }
-        else
-        {
-            mGameobjectToMove.SendMessage("Moved");
-            mGameobjectToMove = null;
-            mMoveToWayPoint = false;
-        }
+ 
     }
 
     void FollowWayPoint()
@@ -82,10 +100,18 @@ public class MoveViaList : MonoBehaviour {
 
     void ReachedWayPoint()
     {
-        if (Vector3.Distance(mGameobjectToMove.transform.position, mWayPointPostion) < WaypointDistance)
+        if (Vector3.Distance(mGameobjectToMove.transform.position, mWayPointPostion) > WaypointDistance)
         {
            SetWaypoint();
         }
+        else if (mWaypointNumber <= 0 && Vector3.Distance(mGameobjectToMove.transform.position, mWayPointPostion) < WaypointDistance)
+        {
+            mGameobjectToMove.SendMessage("Moved");
+            mGameobjectToMove = null;
+            mMoveToWayPoint = false;
+        }
+     
+     
     }
 
     void OnDrawGizmos()

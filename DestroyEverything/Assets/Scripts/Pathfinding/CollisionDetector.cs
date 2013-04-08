@@ -16,46 +16,47 @@ public class CollisionDetector : MonoBehaviour
     public List<UnWalkable> cUnwalkAbles { get; set; }
     public List<UnWalkable> cMovingUnwalkAbles { get; set; }
 
-    public float MoveBeforeAdded;
-
     public Vector3 cLossyScale { get; set; }
 
     private UnWalkable[,] mUnwalkables;
     private UnWalkable[,] mMovingUnwalkables;
 
+    private GameObject mBorders;
+
     // Use this for initialization
     void Start()
     {
+        mBorders = GameObject.Find("Borders");
         cMovingUnwalkAbles = new List<UnWalkable>();
         cUnwalkAbles = new List<UnWalkable>();
-        mUnwalkables = new UnWalkable[2000, 2000];
-        mMovingUnwalkables = new UnWalkable[2000, 2000];
+        mUnwalkables = new UnWalkable[(int)mBorders.transform.lossyScale.x * 10,(int) mBorders.transform.lossyScale.z * 10];
+        mMovingUnwalkables = new UnWalkable[(int)mBorders.transform.lossyScale.x * 10, (int)mBorders.transform.lossyScale.z * 10];
         cLossyScale = transform.parent.lossyScale / 2;
-
         foreach (GameObject tUnWalkable in GameObject.FindGameObjectsWithTag("Unwalkable"))
         {
            
            
-            for (int x = (int) (1000 + (tUnWalkable.transform.position.x - (tUnWalkable.transform.lossyScale.x/2+cLossyScale.x))*10);
-                x < (int)(1000 + (tUnWalkable.transform.position.x + (tUnWalkable.transform.lossyScale.x / 2 + cLossyScale.x)) * 10); x++)
+            for (int x = (int) (((mBorders.transform.lossyScale.x / 2) * 10) + (tUnWalkable.transform.position.x - (tUnWalkable.transform.lossyScale.x/2+cLossyScale.x))*10);
+                x < (int)((((mBorders.transform.lossyScale.x / 2) * 10)) + (tUnWalkable.transform.position.x + (tUnWalkable.transform.lossyScale.x / 2 + cLossyScale.x)) * 10); x++)
             {
 
-                for (int z = (int)(1000 + (tUnWalkable.transform.position.z - (tUnWalkable.transform.lossyScale.z / 2 + cLossyScale.z)) * 10);
-                    z < (int)(1000 + (tUnWalkable.transform.position.z + (tUnWalkable.transform.lossyScale.z / 2 + cLossyScale.z)) * 10);
+                for (int z = (int)(((mBorders.transform.lossyScale.z / 2) * 10) + (tUnWalkable.transform.position.z - (tUnWalkable.transform.lossyScale.z / 2 + cLossyScale.z)) * 10);
+                    z < (int)(((mBorders.transform.lossyScale.z / 2) * 10) + (tUnWalkable.transform.position.z + (tUnWalkable.transform.lossyScale.z / 2 + cLossyScale.z)) * 10);
                     z++)
                 {
                  mUnwalkables[x, z] = new UnWalkable()
                                              {
                                                  LossyScale = tUnWalkable.transform.lossyScale,
-                                                 Postion = new Vector3((int)((1000 + tUnWalkable.transform.position.x) * 10), 0, (int)((1000 + tUnWalkable.transform.position.z) * 10)),
+                                                 Postion = new Vector3(x, 0, z),
                                                  TheOwner = tUnWalkable
                                 
                                              };
                 }
             }
         }
-       AddMovingUnwalkables();
-        InvokeRepeating("AddMovingUnwalkables", 0.0000001f, 0.1f);
+
+        InvokeRepeating("AddMovingUnwalkables",0.0001f,0.03f);
+             
     }
 
 
@@ -73,21 +74,20 @@ public class CollisionDetector : MonoBehaviour
         foreach (GameObject tNpc in GameObject.FindGameObjectsWithTag("Npc"))
         {
 
-            for (int x = (int)(1000 + (tNpc.transform.position.x - (tNpc.transform.lossyScale.x / 2 + cLossyScale.x)) * 10);
-                  x < (int)(1000 + (tNpc.transform.position.x + (tNpc.transform.lossyScale.x / 2 + cLossyScale.x)) * 10);
+            for (int x = (int)(((mBorders.transform.lossyScale.x / 2) * 10) + (tNpc.transform.position.x - (tNpc.transform.lossyScale.x / 2 + cLossyScale.x)) * 10);
+                  x < (int)(((mBorders.transform.lossyScale.x / 2) * 10) + (tNpc.transform.position.x + (tNpc.transform.lossyScale.x / 2 + cLossyScale.x)) * 10);
                   x++)
             {
                 for (
-                    int z = (int)(1000 + (tNpc.transform.position.z - (tNpc.transform.lossyScale.z / 2 + cLossyScale.z)) * 10);
-                    z < (int)(1000 + (tNpc.transform.position.z + (tNpc.transform.lossyScale.z / 2 + cLossyScale.z)) * 10);
+                    int z = (int)(((mBorders.transform.lossyScale.z / 2) * 10) + (tNpc.transform.position.z - (tNpc.transform.lossyScale.z / 2 + cLossyScale.z)) * 10);
+                    z < (int)(((mBorders.transform.lossyScale.z / 2) * 10) + (tNpc.transform.position.z + (tNpc.transform.lossyScale.z / 2 + cLossyScale.z)) * 10);
                     z++)
                 {
                     mMovingUnwalkables[x, z] = new UnWalkable()
                                              {
                                                  LossyScale = tNpc.transform.lossyScale,
-                                                 Postion = new Vector3((int)((1000 + tNpc.transform.position.x) * 10), 0, (int)((1000 + tNpc.transform.position.z) * 10)),
-                                                 TheOwner = tNpc
-                                
+                                                 Postion = new Vector3(x, 0, z),
+                                                 TheOwner = tNpc                                
                                              };
                 }
             }
@@ -95,25 +95,25 @@ public class CollisionDetector : MonoBehaviour
 
         foreach (GameObject tPlayer in GameObject.FindGameObjectsWithTag("Player"))
         {
-            for (int x = (int)(1000 + (tPlayer.transform.position.x - (tPlayer.transform.lossyScale.x / 2 + cLossyScale.x)) * 10);
-             x < (int)(1000 + (tPlayer.transform.position.x + (tPlayer.transform.lossyScale.x / 2 + cLossyScale.x)) * 10);
+            for (int x = (int)(((mBorders.transform.lossyScale.x / 2) * 10) + (tPlayer.transform.position.x - (tPlayer.transform.lossyScale.x / 2 + cLossyScale.x)) * 10);
+             x < (int)(((mBorders.transform.lossyScale.x / 2) * 10) + (tPlayer.transform.position.x + (tPlayer.transform.lossyScale.x / 2 + cLossyScale.x)) * 10);
              x++)
             {
-                for (int z = (int)(1000 + (tPlayer.transform.position.z - (tPlayer.transform.lossyScale.z / 2 + cLossyScale.z)) * 10);
-                    z < (int)(1000 + (tPlayer.transform.position.z + (tPlayer.transform.lossyScale.z / 2 + cLossyScale.z)) * 10);
+                for (int z = (int)(((mBorders.transform.lossyScale.z / 2) * 10) + (tPlayer.transform.position.z - (tPlayer.transform.lossyScale.z / 2 + cLossyScale.z)) * 10);
+                    z < (int)(((mBorders.transform.lossyScale.z / 2) * 10) + (tPlayer.transform.position.z + (tPlayer.transform.lossyScale.z / 2 + cLossyScale.z)) * 10);
                     z++)
                 {
-                    
                     mMovingUnwalkables[x, z] = new UnWalkable()
                                              {
                                                  LossyScale = tPlayer.transform.lossyScale,
-                                                 Postion = new Vector3((int)((1000 + tPlayer.transform.position.x) * 10), 0, (int)((1000 + tPlayer.transform.position.z) * 10)),
+                                                 Postion = new Vector3(x, 0,z),
                                                  TheOwner = tPlayer
                                 
                                              };
                 }
             }
         }
+        
 
     }
 
@@ -125,16 +125,30 @@ public class CollisionDetector : MonoBehaviour
     {
         bool tIsCollingWithUnWalkable = false;
 
-        UnWalkable tMovingUnWalkable = mMovingUnwalkables[(int) pPosToCheck.x, (int) pPosToCheck.z];
+        try
+        {
+            if (mUnwalkables[(int)((pPosToCheck.x * 10) + (mBorders.transform.lossyScale.x / 2 * 10)),
+            (int)+((pPosToCheck.z * 10) + (mBorders.transform.lossyScale.z / 2 * 10))] != null)
+            {
+                tIsCollingWithUnWalkable = true;
+            }
+        }
+        catch (Exception)
+        {
+            print("POS EXPECTED TO BE LEADER POS "+pPosToCheck);
+           print("POS THAT FUCKS"+ (new Vector3((int)((pPosToCheck.x * 10) + (mBorders.transform.lossyScale.x / 2 * 10)),0,
+            (int)+((pPosToCheck.z * 10) + (mBorders.transform.lossyScale.z / 2 * 10)))));
+        }
+      
 
-        if (mUnwalkables[(int)pPosToCheck.x, (int)pPosToCheck.z] != null)
+       UnWalkable tMovingUnWalkable = mMovingUnwalkables[(int)((pPosToCheck.x * 10) + (mBorders.transform.lossyScale.x/2 * 10)),
+            (int)((pPosToCheck.z * 10) + (mBorders.transform.lossyScale.z/2 * 10))];
+
+     
+       if (tMovingUnWalkable != null && tMovingUnWalkable.TheOwner.GetInstanceID() != pTheOwner.GetInstanceID())
         {
             tIsCollingWithUnWalkable = true;
-        }
-        if (tMovingUnWalkable != null && tMovingUnWalkable.TheOwner.GetInstanceID() != pTheOwner.GetInstanceID())
-        {
-            tIsCollingWithUnWalkable = true;
-        }
+        } 
 
 
 
@@ -146,12 +160,15 @@ public class CollisionDetector : MonoBehaviour
     {
         UnWalkable tIsCollingWithUnWalkable = null;
 
-        
-        UnWalkable tMovingUnWalkable = mMovingUnwalkables[(int)pPosToCheck.x, (int)pPosToCheck.z];
 
-        if (mUnwalkables[(int)pPosToCheck.x, (int)pPosToCheck.z] != null)
+        UnWalkable tMovingUnWalkable = mMovingUnwalkables[(int)((pPosToCheck.x * 10) + (mBorders.transform.lossyScale.x / 2 * 10)),
+            (int)((pPosToCheck.z * 10) + (mBorders.transform.lossyScale.z / 2 * 10))];
+
+
+        if (mUnwalkables[(int)((pPosToCheck.x * 10) + (mBorders.transform.lossyScale.x / 2 * 10)),
+            (int)+((pPosToCheck.z * 10) + (mBorders.transform.lossyScale.z / 2 * 10))] != null)
         {
-            tIsCollingWithUnWalkable = mUnwalkables[(int) pPosToCheck.x, (int) pPosToCheck.z];
+            tIsCollingWithUnWalkable = mUnwalkables[(int)((pPosToCheck.x * 10) + (mBorders.transform.lossyScale.x/2 * 10)), (int)+((pPosToCheck.z * 10) + (mBorders.transform.lossyScale.z/2 * 10))];
         }
 
         if (tMovingUnWalkable != null && tMovingUnWalkable.TheOwner != null &&  tMovingUnWalkable.TheOwner.GetInstanceID() != pTheOwner.GetInstanceID())

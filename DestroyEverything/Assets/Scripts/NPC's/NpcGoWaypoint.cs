@@ -18,6 +18,7 @@ public class NpcGoWaypoint: MonoBehaviour
     public float WaypointReachDistance;
     public float WalkSpeed;
     public float RunSpeed;
+    public float IntervalToFindNewPath = 0.25f;
 
     
     public bool cMoveToWaypoint { get; set; }
@@ -31,23 +32,30 @@ public class NpcGoWaypoint: MonoBehaviour
 
     private Camera mNpcCamera;
 
-    private Pathfinding mPathfinding;
-
     private MoveViaList mMoveViaList;
 
     private bool mStopped;
+    private bool mFollowLeader;
+
+    private float mPathTime = 0;
+
+    private GameObject mLeaderToFollow;
     
 
 	// Use this for initialization
 	void Start ()
 	{
-	    mPathfinding = transform.FindChild("Pathfinding").GetComponent<Pathfinding>();
         mMoveViaList = transform.FindChild("MoveViaList").GetComponent<MoveViaList>();
         mNpcCamera = transform.FindChild("Camera").GetComponent<Camera>();
         StartCycle();
       }
     	// Update is called once per frame
 	void Update () {
+        if(mFollowLeader)
+        {
+            //mFollowLeader = FindNpcWithMostLeadership();
+        }
+
 	    if(cMoveToWaypoint)
 	    {
 	        MoveToWaypoint();
@@ -84,15 +92,14 @@ public class NpcGoWaypoint: MonoBehaviour
 
     public void RunAwayToNpcWithMostLeadership()
     {
-        int tRandomNumber = Random.Range(0, GameObject.FindGameObjectsWithTag("RunWaypoint").Length);
-      mPathfinding.InitFastestRoad(transform.position,FindNpcWithMostLeadership().transform.position,gameObject);
-       
+        mLeaderToFollow = FindNpcWithMostLeadership();
+        print("LEADERPOS "+mLeaderToFollow.transform.position);
+        mMoveViaList.MoveGameobjectViaList(gameObject, transform.position, mLeaderToFollow.transform.position, RunSpeed);
+        
+        mFollowLeader = true;
     }
 
-    void SetListToFollow(List<Node> pListToFollow)
-    {
-        mMoveViaList.MoveGameobjectViaList(gameObject,pListToFollow,WalkSpeed);
-    }
+
 
     GameObject FindNpcWithMostLeadership()
     {
@@ -129,7 +136,6 @@ public class NpcGoWaypoint: MonoBehaviour
         {
             mWaypointNumber++;
         }
-
         GoToWaypoint(Waypoints[mWaypointNumber].Name);
     }
 
@@ -139,9 +145,18 @@ public class NpcGoWaypoint: MonoBehaviour
         if(mWayPointToGoTo != null)
         {
             mNpcCamera.transform.LookAt(mWayPointToGoTo.transform.position);
-            if(!mPathfinding.cRun)
+            if(mPathTime < Time.time)
             {
-                mPathfinding.InitFastestRoad(transform.position, mWayPointToGoTo.transform.position, gameObject);
+                mPathTime = Time.time + IntervalToFindNewPath;
+                if(mLeaderToFollow != null)
+                {
+                    mMoveViaList.MoveGameobjectViaList(gameObject, transform.position, mLeaderToFollow.transform.position, WalkSpeed);
+                }
+                else
+                {
+                    mMoveViaList.MoveGameobjectViaList(gameObject, transform.position, mWayPointToGoTo.transform.position, WalkSpeed);
+                }
+                
             }
            
         }
